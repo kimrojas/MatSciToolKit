@@ -1,0 +1,6 @@
+&BANDS
+  prefix = 'fe'
+  outdir = './tmp/'
+  filband = 'fe_bands_dn.dat'
+  spin_component = 2
+/

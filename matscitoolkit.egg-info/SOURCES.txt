@@ -1,0 +1,10 @@
+README.md
+setup.py
+matscitoolkit/__init__.py
+matscitoolkit/gnu_parser.py
+matscitoolkit.egg-info/PKG-INFO
+matscitoolkit.egg-info/SOURCES.txt
+matscitoolkit.egg-info/dependency_links.txt
+matscitoolkit.egg-info/requires.txt
+matscitoolkit.egg-info/top_level.txt
+test/test_gnu_parser.py
