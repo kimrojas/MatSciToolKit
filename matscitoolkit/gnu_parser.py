@@ -44,10 +44,3 @@ def read_gnu_datafile(
 
     return data
 
-
-if __name__ == "__main__":
-    d = read_gnu_datafile("../test/test_data/bandstructure_np/si_bands.dat.gnu")
-    fig, ax = plt.subplots()
-    for i in range(d.shape[0]):
-        ax.plot(d[i, :, 0], d[i, :, 1], "k-", linewidth=1)
-    plt.show()

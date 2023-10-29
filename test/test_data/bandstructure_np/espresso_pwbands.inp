@@ -15,6 +15,9 @@
   ecutwfc = 50,
   ecutrho = 400,
   nbnd = 8
+  occupations = 'smearing',
+  smearing = 'm-v',
+  degauss = 0.1
  /
 
 &electrons
