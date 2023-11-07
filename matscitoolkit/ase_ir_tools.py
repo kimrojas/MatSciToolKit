@@ -197,7 +197,10 @@ class DFTrunner:
 
     def run(self):
         """Run DFT calculation."""
-        
+
+        if 'ESPRESSO_TMPDIR' not in os.environ:
+            os.environ['ESPRESSO_TMPDIR'] = f"tmpdir"
+
         os.makedirs(self.calc_check, exist_ok=True)
         calc_check_file = os.path.join(self.calc_check, f"{self.filename.removesuffix('.vasp')}.log")
         fw = open(calc_check_file, "w")
@@ -260,8 +263,8 @@ class DFTrunner:
 
     def remove_tmpdir(self):
         # check if ESPRESSO_TMPDIR is set
-        if "ESPRESSO_TMPDIR" in os.environ:
-            os.system(f"rm -r {self.directory_loc}/{os.environ['ESPRESSO_TMPDIR']}")
+        os.system(f"rm -r {self.directory_loc}/{os.environ['ESPRESSO_TMPDIR']}")
+
 
 
 def check_dict(d):

@@ -1,7 +1,7 @@
-matplotlib
-multiprocess
 numpy==1.22
+matplotlib
 pandas
-pytest
-scipy
 tqdm
+scipy
+pytest
+multiprocess

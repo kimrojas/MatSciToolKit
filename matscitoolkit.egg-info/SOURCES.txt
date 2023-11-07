@@ -11,4 +11,7 @@ matscitoolkit.egg-info/SOURCES.txt
 matscitoolkit.egg-info/dependency_links.txt
 matscitoolkit.egg-info/requires.txt
 matscitoolkit.egg-info/top_level.txt
+matscitoolkit/utils/__init__.py
+matscitoolkit/utils/parallel.py
+matscitoolkit/utils/plot.py
 test/test_gnu_parser.py

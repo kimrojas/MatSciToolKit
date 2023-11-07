@@ -1,4 +1,5 @@
 from matscitoolkit.ase_ir_tools import DFTrunner
+import os
 
 import argparse
 argparser = argparse.ArgumentParser()
@@ -27,6 +28,7 @@ input_data = {
         "occupations": "smearing",
         "smearing": "gaussian",
         "degauss": 0.01,
+        "input_dft": "vdw-df2-b86r",
     },
     "electrons": {
         "electron_maxstep": 300,
@@ -41,12 +43,13 @@ x = DFTrunner(
     system_id=args.id,
     input_data=input_data,
     pseudopotentials=pseudopotentials,
-    kpts=[1, 1, 1],
+    kpts=[12, 12, 1],
     dirname="dft_calc/SUFFIX",
-    espresso_command=["mpirun", "-np", "2", "pw.x"],
-    field_directions=[1, 2, 3],
+    espresso_command=os.environ["ESPRESSO_COMMAND"].split(),
+    field_directions=[3],
     emaxpos="auto",
     eamp=0.005,
     eopreg=0.01,
 )
 x.run()
+
