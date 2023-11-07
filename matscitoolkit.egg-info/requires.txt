@@ -1,7 +1,0 @@
-numpy==1.22
-matplotlib
-pandas
-tqdm
-scipy
-pytest
-multiprocess
