@@ -48,8 +48,7 @@ x = DFTrunner(
     espresso_command=os.environ["ESPRESSO_COMMAND"].split(),
     field_directions=[3],
     emaxpos="auto",
-    eamp=0.005,
-    eopreg=0.01,
+    eamp=0.0,
+    eopreg=0.0001,
 )
 x.run()
-
