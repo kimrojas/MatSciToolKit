@@ -159,8 +159,8 @@ class DFTrunner:
         espresso_command=["mpirun", "pw.x"],
         field_directions=[1, 2, 3],
         emaxpos="auto",
-        eamp=0.005,
-        eopreg=0.01,
+        eamp=0.0,
+        eopreg=0.0001,
         calc_check="calc_check",
         debug=False,
     ):
