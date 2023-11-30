@@ -1,0 +1,46 @@
+&CONTROL
+   tprnfor          = .true.
+   tefield          = .true.
+   dipfield         = .true.
+/
+&SYSTEM
+   ecutwfc          = 60
+   ecutrho          = 480
+   occupations      = 'smearing'
+   degauss          = 0.01
+   smearing         = 'gaussian'
+   edir             = 3
+   emaxpos          = 1.0
+   eopreg           = 0.0001
+   eamp             = 0.0
+   ntyp             = 2
+   nat              = 3
+   ibrav            = 0
+/
+&ELECTRONS
+   electron_maxstep = 100
+   conv_thr         = 1e-07
+   mixing_beta      = 0.7
+/
+&IONS
+/
+&CELL
+/
+
+ATOMIC_SPECIES
+O 15.999 o_pbe_v1.2.uspp.F.UPF
+H 1.008 h_pbe_v1.4.uspp.F.UPF
+
+K_POINTS automatic
+1 1 1  0 0 0
+
+CELL_PARAMETERS angstrom
+15.00000000000000 0.00000000000000 0.00000000000000
+0.00000000000000 15.00000000000000 0.00000000000000
+0.00000000000000 0.00000000000000 15.00000000000000
+
+ATOMIC_POSITIONS angstrom
+O 7.5000000000 7.5000000000 7.8127066826  
+H 7.5000000000 8.2702188277 7.1972933174  
+H 7.5000000000 6.7297811723 7.1972933174  
+
