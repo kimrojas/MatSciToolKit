@@ -12,6 +12,6 @@ x.generate_spectra()
 x.load_summary()
 x.load_spectra()
 x.generate_mode_traj()
-# x.generate_mode_gif()
+x.generate_mode_gif()
 x.generate_spectra_plot()
 

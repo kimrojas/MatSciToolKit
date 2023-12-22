@@ -391,16 +391,20 @@ class PostProcess:
         Use cached data, by default False.
     """    
     
-    def __init__(self, structure_file=None, nproc=1, plot_title="Infrared Plot", debug=True, use_cache=False):
+    def __init__(self, structure_file=None, suffix="", infrared_options={}, nproc=1, plot_title="Infrared Plot", debug=True, use_cache=False):
         # Initialize all parameters
 
-        self.MODES_DIR = "ir_modes"
-        self.HIGH_MODES_DIR = "ir_high_modes"
-        self.SUMMARY_FILE = "report_summary.dat"
-        self.SPECTRA_FILE = "report_spectra.dat"
-        self.SPECTRA_PLOT_FILE = "report_spectra.png"
+        self.INFRARED_OPTIONS = infrared_options
+        if suffix != "":
+            suffix = "_" + suffix
+
+        self.MODES_DIR = "ir_modes{}".format(suffix)
+        self.HIGH_MODES_DIR = "ir_high_modes{}".format(suffix)
+        self.SUMMARY_FILE = "report_summary{}.dat".format(suffix)
+        self.SPECTRA_FILE = "report_spectra{}.dat".format(suffix)
+        self.SPECTRA_PLOT_FILE = "report_spectra{}.png".format(suffix)
         self.SPECTRA_PLOT_TITLE = plot_title
-        self.CACHE_FILE = "report_infrared.cache.pkl"
+        self.CACHE_FILE = "report_infrared{}.cache.pkl".format(suffix)
         self.PARALLEL_NPROC = nproc
         self.debug = debug
 
@@ -415,6 +419,10 @@ class PostProcess:
         # Initialize placeholders
         self.ir = None
         self.atoms_obj = None
+        
+        # Infrared class options
+        if "name" not in self.INFRARED_OPTIONS:
+            self.INFRARED_OPTIONS["name"] = "ir"
 
         # Cache mode
         if use_cache:
@@ -425,7 +433,9 @@ class PostProcess:
                 self.atoms_obj = read(glob("displacement_dir/*.vasp")[0])
             else:
                 self.atoms_obj = read(structure_file)
-            self.ir = Infrared(self.atoms_obj, name="ir")
+            
+            
+            self.ir = Infrared(self.atoms_obj, **self.INFRARED_OPTIONS)
             self.ir.get_vibrations()
             with open(self.CACHE_FILE, "wb") as f:
                 pickle.dump(self.ir, f)
@@ -470,7 +480,7 @@ class PostProcess:
 
         self.SMEARING_WIDTH = width
 
-    def load_summary(self):
+    def load_summary(self, ntop=4):
         # STEP 3: Summary: load, clean, filter
         ## 3.1 Load summary
         modes = np.genfromtxt(
@@ -496,8 +506,8 @@ class PostProcess:
         ## filter by intensity
         a = self.clean_modes["intensity"]
         sorted_indices = np.argsort(a)
-        top_4_index = sorted_indices[-4:][::-1]
-        self.top_modes = self.clean_modes[top_4_index]
+        top_index = sorted_indices[-ntop:][::-1]
+        self.top_modes = self.clean_modes[top_index]
 
         if self.debug:
             print_log(f"\t Clean dataset shape:  {self.clean_modes.shape}")
