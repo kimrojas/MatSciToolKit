@@ -23,10 +23,7 @@ from matscitoolkit.utils.parallel import process_map
 from matscitoolkit.utils.plot import plot_function, plot_spectra
 
 
-def generateDisplacedStructures(
-    filepath: str,
-    disp_dir: str = "displacement_dir",
-):
+def generateDisplacedStructures(filepath: str, disp_dir: str = "displacement_dir", filetype: str = "traj"):
     """
     Generate displaced structures from a given structure file.
 
@@ -56,7 +53,7 @@ def generateDisplacedStructures(
         disp, atm = image
         data = {"name": disp.name, "mode": disp.a, "direction": disp.i, "sign": disp.sign, "ndisp": disp.ndisp}
 
-        filename = f"{i:0{width}d}.{data['name']}.vasp"
+        filename = f"{i:0{width}d}.{data['name']}.{filetype}"
         write(os.path.join(disp_dir, filename), atm)
         print_log(f"\t{i:>{width}d} {data['name']:10s} :: {data}")
 
@@ -108,6 +105,7 @@ class DFTrunner:
         espresso_command=["mpirun", "pw.x"],
         calc_check="calc_check",
         debug=False,
+        filetype="traj",
     ):
         self.system_id = system_id
         self.input_data = input_data
@@ -118,9 +116,10 @@ class DFTrunner:
         self.espresso_command = espresso_command
         self.calc_check = calc_check
         self.debug = debug
+        self.filetype = filetype
 
         # Initialize system data
-        filelist = glob(os.path.join(self.displacement_dir, "*.vasp"))
+        filelist = glob(os.path.join(self.displacement_dir, f"*.{self.filetype}"))
         filedict = {int(os.path.basename(f).split(".")[0]): f for f in filelist}
         filepath = filedict[self.system_id]
         self.filename = os.path.basename(filepath)
@@ -134,7 +133,8 @@ class DFTrunner:
             os.environ["ESPRESSO_TMPDIR"] = f"tmpdir"
 
         os.makedirs(self.calc_check, exist_ok=True)
-        calc_check_file = os.path.join(self.calc_check, f"{self.filename.removesuffix('.vasp')}.log")
+        _fn = self.filename.removesuffix(f".{self.filetype}")
+        calc_check_file = os.path.join(self.calc_check, f"{_fn}.log")
         fw = open(calc_check_file, "w")
 
         fw.write("============================================================\n")
@@ -175,7 +175,7 @@ class DFTrunner:
         }
 
         # Change directory name
-        FileID = f"{self.filename.removesuffix('.vasp')}"
+        FileID = self.filename.removesuffix(f".{self.filetype}")
         self.directory_loc = espresso_args["directory"].replace("SUFFIX", f"/{FileID}")
         espresso_args["directory"] = self.directory_loc
 
@@ -283,7 +283,9 @@ class PostProcess:
         Use cached data, by default False.
     """
 
-    def __init__(self, structure_file=None, nproc=1, plot_title="Vibration Plot", debug=True, use_cache=False):
+    def __init__(
+        self, structure_file=None, nproc=1, plot_title="Vibration Plot", debug=True, use_cache=False, filetype="traj"
+    ):
         # Initialize all parameters
 
         self.MODES_DIR = "vib_modes"
@@ -295,6 +297,7 @@ class PostProcess:
         self.CACHE_FILE = "report_vibration.cache.pkl"
         self.PARALLEL_NPROC = nproc
         self.debug = debug
+        self.filetype = filetype
 
         if self.debug:
             print_log("============================================================")
@@ -314,7 +317,7 @@ class PostProcess:
                 self.vib = pickle.load(f)
         else:
             if structure_file is None:
-                self.atoms_obj = read(glob("displacement_dir/*.vasp")[0])
+                self.atoms_obj = read(glob(f"displacement_dir/*.{self.filetype}")[0])
             else:
                 self.atoms_obj = read(structure_file)
             self.vib = Vibrations(self.atoms_obj, name="vib")
@@ -450,7 +453,7 @@ class PostProcess:
     def generate_spectra_plot(self, figsize=(4.4, 3.52), fontsize=9, dpi=150):
         """
         Generate spectra plot.
-        
+
         Parameters
         ----------
         figsize : tuple, optional
@@ -458,7 +461,7 @@ class PostProcess:
         fontsize : int, optional
             Font size, by default 9.
         dpi : int, optional
-            DPI, by default 150.        
+            DPI, by default 150.
         """
         if self.debug:
             print_log("\n----- GENERATING SPECTRA PLOT... ")
