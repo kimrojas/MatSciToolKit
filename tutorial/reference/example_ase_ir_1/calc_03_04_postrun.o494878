@@ -1,0 +1,63 @@
+-- Disk Usage Report (2024-03-10):    1.1TiB --
+========= Job started  at Tue Mar 12 18:30:13 JST 2024 ==========
+Collecting from edir_3:   0%|          | 0/25 [00:00<?, ?it/s]Collecting from edir_3:  40%|████      | 10/25 [00:00<00:00, 94.62it/s]Collecting from edir_3:  88%|████████▊ | 22/25 [00:00<00:00, 106.51it/s]Collecting from edir_3: 100%|██████████| 25/25 [00:00<00:00, 105.79it/s]
+============================================================
+Post-processing data 	 2024-03-12 18:30:15.650773
+============================================================
+
+----- GENERAL SETTINGS...
+	INFRARED_OPTIONS: {}
+	MODES_DIR: ir_modes
+	HIGH_MODES_DIR: ir_high_modes
+	SUMMARY_FILE: report_summary.dat
+	SPECTRA_FILE: report_spectra.dat
+	SPECTRA_PLOT_FILE: report_spectra.png
+	SPECTRA_PLOT_TITLE: Infrared Plot
+	CACHE_FILE: report_infrared.cache.pkl
+	PARALLEL_NPROC: 4
+	debug: True
+
+----- GENERATING SUMMARY...
+	 Summary file: {self.SUMMARY_FILE}
+
+----- GENERATING SPECTRA...
+	 Spectra file: report_spectra.dat
+	 Width: 30
+	 Method: Lorentzian
+
+----- LOADING SUMMARY...
+	 Summary dataset shape:  (12,)
+	 Summary dataset columns:  ('mode', 'frequency_mev', 'frequency_cm', 'intensity')
+	 Clean dataset shape:  (9,)
+	 Clean dataset columns:  ('mode', 'frequency_mev', 'frequency_cm', 'intensity')
+	 Top modes:
+		     5  88.1  710.2000  0.05580000
+		     3  69.7  562.1000  0.01720000
+		    10  225.8  1821.2000  0.00750000
+		     8  186.8  1506.4000  0.00600000
+
+----- LOADING SPECTRA...
+
+----- GENERATING MODE TRAJECTORY FILES...
+generating mode trajectory files:   0%|          | 0/12 [00:00<?, ?it/s]generating mode trajectory files: 100%|██████████| 12/12 [00:00<00:00, 152.70it/s]
+generating high mode trajectory files:   0%|          | 0/4 [00:00<?, ?it/s]generating high mode trajectory files: 100%|██████████| 4/4 [00:00<00:00, 86.73it/s]
+
+----- GENERATING MODE GIF FILES...
+generating mode GIF files:   0%|          | 0/12 [00:00<?, ?it/s]MovieWriter ffmpeg unavailable; using Pillow instead.
+MovieWriter ffmpeg unavailable; using Pillow instead.
+MovieWriter ffmpeg unavailable; using Pillow instead.
+MovieWriter ffmpeg unavailable; using Pillow instead.
+MovieWriter ffmpeg unavailable; using Pillow instead.
+generating mode GIF files:   8%|▊         | 1/12 [00:05<00:58,  5.29s/it]MovieWriter ffmpeg unavailable; using Pillow instead.
+MovieWriter ffmpeg unavailable; using Pillow instead.
+MovieWriter ffmpeg unavailable; using Pillow instead.
+generating mode GIF files:  42%|████▏     | 5/12 [00:10<00:12,  1.80s/it]MovieWriter ffmpeg unavailable; using Pillow instead.
+generating mode GIF files:  50%|█████     | 6/12 [00:10<00:08,  1.46s/it]MovieWriter ffmpeg unavailable; using Pillow instead.
+MovieWriter ffmpeg unavailable; using Pillow instead.
+MovieWriter ffmpeg unavailable; using Pillow instead.
+generating mode GIF files:  75%|███████▌  | 9/12 [00:15<00:04,  1.53s/it]generating mode GIF files:  83%|████████▎ | 10/12 [00:15<00:02,  1.30s/it]generating mode GIF files: 100%|██████████| 12/12 [00:15<00:00,  1.30s/it]
+
+----- GENERATING SPECTRA PLOT... 
+	 Plotting spectra...
+	 Saving spectra plot...
+========= Job finished at Tue Mar 12 18:30:32 JST 2024 ==========

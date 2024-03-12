@@ -1,0 +1,43 @@
+-- Disk Usage Report (2024-03-10):    1.1TiB --
+========= Job started  at Tue Mar 12 18:21:22 JST 2024 ==========
+============================================================
+Generating displaced structures 	 2024-03-12 18:21:23.724414
+============================================================
+	Total items: 25
+	 1 eq         :: {'name': 'eq', 'mode': 0, 'direction': 0, 'sign': 0, 'ndisp': 0}
+	 2 0x-        :: {'name': '0x-', 'mode': 0, 'direction': 0, 'sign': -1, 'ndisp': 1}
+	 3 0x+        :: {'name': '0x+', 'mode': 0, 'direction': 0, 'sign': 1, 'ndisp': 1}
+	 4 0y-        :: {'name': '0y-', 'mode': 0, 'direction': 1, 'sign': -1, 'ndisp': 1}
+	 5 0y+        :: {'name': '0y+', 'mode': 0, 'direction': 1, 'sign': 1, 'ndisp': 1}
+	 6 0z-        :: {'name': '0z-', 'mode': 0, 'direction': 2, 'sign': -1, 'ndisp': 1}
+	 7 0z+        :: {'name': '0z+', 'mode': 0, 'direction': 2, 'sign': 1, 'ndisp': 1}
+	 8 1x-        :: {'name': '1x-', 'mode': 1, 'direction': 0, 'sign': -1, 'ndisp': 1}
+	 9 1x+        :: {'name': '1x+', 'mode': 1, 'direction': 0, 'sign': 1, 'ndisp': 1}
+	10 1y-        :: {'name': '1y-', 'mode': 1, 'direction': 1, 'sign': -1, 'ndisp': 1}
+	11 1y+        :: {'name': '1y+', 'mode': 1, 'direction': 1, 'sign': 1, 'ndisp': 1}
+	12 1z-        :: {'name': '1z-', 'mode': 1, 'direction': 2, 'sign': -1, 'ndisp': 1}
+	13 1z+        :: {'name': '1z+', 'mode': 1, 'direction': 2, 'sign': 1, 'ndisp': 1}
+	14 2x-        :: {'name': '2x-', 'mode': 2, 'direction': 0, 'sign': -1, 'ndisp': 1}
+	15 2x+        :: {'name': '2x+', 'mode': 2, 'direction': 0, 'sign': 1, 'ndisp': 1}
+	16 2y-        :: {'name': '2y-', 'mode': 2, 'direction': 1, 'sign': -1, 'ndisp': 1}
+	17 2y+        :: {'name': '2y+', 'mode': 2, 'direction': 1, 'sign': 1, 'ndisp': 1}
+	18 2z-        :: {'name': '2z-', 'mode': 2, 'direction': 2, 'sign': -1, 'ndisp': 1}
+	19 2z+        :: {'name': '2z+', 'mode': 2, 'direction': 2, 'sign': 1, 'ndisp': 1}
+	20 3x-        :: {'name': '3x-', 'mode': 3, 'direction': 0, 'sign': -1, 'ndisp': 1}
+	21 3x+        :: {'name': '3x+', 'mode': 3, 'direction': 0, 'sign': 1, 'ndisp': 1}
+	22 3y-        :: {'name': '3y-', 'mode': 3, 'direction': 1, 'sign': -1, 'ndisp': 1}
+	23 3y+        :: {'name': '3y+', 'mode': 3, 'direction': 1, 'sign': 1, 'ndisp': 1}
+	24 3z-        :: {'name': '3z-', 'mode': 3, 'direction': 2, 'sign': -1, 'ndisp': 1}
+	25 3z+        :: {'name': '3z+', 'mode': 3, 'direction': 2, 'sign': 1, 'ndisp': 1}
+
+
+
+============================================================
+Computing EMAXPOS 	 2024-03-12 18:21:23.856917
+============================================================
+	atomic space - x: 0.000 0.502
+	atomic space - y: 0.000 0.655
+	atomic space - z: 0.419 0.581
+	EMAXPOS (along directions): X=0.751 | Y=0.828 | Z=1.000
+	**note: EMAXPOS should only be used in directions with vacuum
+========= Job finished at Tue Mar 12 18:21:23 JST 2024 ==========
