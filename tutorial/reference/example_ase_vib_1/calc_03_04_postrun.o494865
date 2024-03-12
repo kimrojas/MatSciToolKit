@@ -1,0 +1,120 @@
+-- Disk Usage Report (2024-03-10):    1.1TiB --
+========= Job started  at Tue Mar 12 17:59:39 JST 2024 ==========
+['dft_calc/01.eq',
+ 'dft_calc/02.0x-',
+ 'dft_calc/03.0x+',
+ 'dft_calc/04.0y-',
+ 'dft_calc/05.0y+',
+ 'dft_calc/06.0z-',
+ 'dft_calc/07.0z+',
+ 'dft_calc/08.1x-',
+ 'dft_calc/09.1x+',
+ 'dft_calc/10.1y-',
+ 'dft_calc/11.1y+',
+ 'dft_calc/12.1z-',
+ 'dft_calc/13.1z+',
+ 'dft_calc/14.2x-',
+ 'dft_calc/15.2x+',
+ 'dft_calc/16.2y-',
+ 'dft_calc/17.2y+',
+ 'dft_calc/18.2z-',
+ 'dft_calc/19.2z+',
+ 'dft_calc/20.3x-',
+ 'dft_calc/21.3x+',
+ 'dft_calc/22.3y-',
+ 'dft_calc/23.3y+',
+ 'dft_calc/24.3z-',
+ 'dft_calc/25.3z+']
+{'0x+': 'dft_calc/03.0x+/espresso.pwo',
+ '0x-': 'dft_calc/02.0x-/espresso.pwo',
+ '0y+': 'dft_calc/05.0y+/espresso.pwo',
+ '0y-': 'dft_calc/04.0y-/espresso.pwo',
+ '0z+': 'dft_calc/07.0z+/espresso.pwo',
+ '0z-': 'dft_calc/06.0z-/espresso.pwo',
+ '1x+': 'dft_calc/09.1x+/espresso.pwo',
+ '1x-': 'dft_calc/08.1x-/espresso.pwo',
+ '1y+': 'dft_calc/11.1y+/espresso.pwo',
+ '1y-': 'dft_calc/10.1y-/espresso.pwo',
+ '1z+': 'dft_calc/13.1z+/espresso.pwo',
+ '1z-': 'dft_calc/12.1z-/espresso.pwo',
+ '2x+': 'dft_calc/15.2x+/espresso.pwo',
+ '2x-': 'dft_calc/14.2x-/espresso.pwo',
+ '2y+': 'dft_calc/17.2y+/espresso.pwo',
+ '2y-': 'dft_calc/16.2y-/espresso.pwo',
+ '2z+': 'dft_calc/19.2z+/espresso.pwo',
+ '2z-': 'dft_calc/18.2z-/espresso.pwo',
+ '3x+': 'dft_calc/21.3x+/espresso.pwo',
+ '3x-': 'dft_calc/20.3x-/espresso.pwo',
+ '3y+': 'dft_calc/23.3y+/espresso.pwo',
+ '3y-': 'dft_calc/22.3y-/espresso.pwo',
+ '3z+': 'dft_calc/25.3z+/espresso.pwo',
+ '3z-': 'dft_calc/24.3z-/espresso.pwo',
+ 'eq': 'dft_calc/01.eq/espresso.pwo'}
+============================================================
+Post-processing data 	 2024-03-12 17:59:42.498960
+============================================================
+
+----- GENERAL SETTINGS...
+	MODES_DIR: vib_modes
+	HIGH_MODES_DIR: vib_high_modes
+	SUMMARY_FILE: report_summary.dat
+	SPECTRA_FILE: report_spectra.dat
+	SPECTRA_PLOT_FILE: report_spectra.png
+	SPECTRA_PLOT_TITLE: Vibration Plot
+	CACHE_FILE: report_vibration.cache.pkl
+	PARALLEL_NPROC: 16
+	debug: True
+	filetype: traj
+
+----- GENERATING SUMMARY...
+	 Summary file: report_summary.dat
+
+----- GENERATING SPECTRA...
+	 Spectra file: report_spectra.dat
+	 Width: 30
+	 Method: Lorentzian
+
+----- LOADING SUMMARY...
+	 Summary dataset shape:  (12,)
+	 Summary dataset columns:  ('mode', 'frequency_mev', 'frequency_cm')
+array([( 0,       nan,        nan), ( 1, 1.000e-01, 4.0000e-01),
+       ( 2, 1.000e-01, 6.0000e-01), ( 3, 6.770e+01, 5.4620e+02),
+       ( 4, 8.150e+01, 6.5710e+02), ( 5, 8.640e+01, 6.9670e+02),
+       ( 6, 1.186e+02, 9.5680e+02), ( 7, 1.259e+02, 1.0157e+03),
+       ( 8, 1.873e+02, 1.5110e+03), ( 9, 2.166e+02, 1.7472e+03),
+       (10, 2.292e+02, 1.8484e+03), (11, 2.614e+02, 2.1083e+03)],
+      dtype=[('mode', '<i8'), ('frequency_mev', '<f8'), ('frequency_cm', '<f8')])
+array([( 1, 1.000e-01, 4.0000e-01), ( 2, 1.000e-01, 6.0000e-01),
+       ( 3, 6.770e+01, 5.4620e+02), ( 4, 8.150e+01, 6.5710e+02),
+       ( 5, 8.640e+01, 6.9670e+02), ( 6, 1.186e+02, 9.5680e+02),
+       ( 7, 1.259e+02, 1.0157e+03), ( 8, 1.873e+02, 1.5110e+03),
+       ( 9, 2.166e+02, 1.7472e+03), (10, 2.292e+02, 1.8484e+03),
+       (11, 2.614e+02, 2.1083e+03)],
+      dtype=[('mode', '<i8'), ('frequency_mev', '<f8'), ('frequency_cm', '<f8')])
+	 Clean dataset shape:  (11,)
+	 Clean dataset columns:  ('mode', 'frequency_mev', 'frequency_cm')
+
+----- LOADING SPECTRA...
+
+----- GENERATING MODE TRAJECTORY FILES...
+generating mode trajectory files:   0%|          | 0/12 [00:00<?, ?it/s]generating mode trajectory files: 100%|██████████| 12/12 [00:00<00:00, 157779.46it/s]
+
+----- GENERATING MODE GIF FILES...
+generating mode GIF files:   0%|          | 0/12 [00:00<?, ?it/s]MovieWriter ffmpeg unavailable; using Pillow instead.
+MovieWriter ffmpeg unavailable; using Pillow instead.
+MovieWriter ffmpeg unavailable; using Pillow instead.
+MovieWriter ffmpeg unavailable; using Pillow instead.
+MovieWriter ffmpeg unavailable; using Pillow instead.
+MovieWriter ffmpeg unavailable; using Pillow instead.
+MovieWriter ffmpeg unavailable; using Pillow instead.
+MovieWriter ffmpeg unavailable; using Pillow instead.
+MovieWriter ffmpeg unavailable; using Pillow instead.
+MovieWriter ffmpeg unavailable; using Pillow instead.
+MovieWriter ffmpeg unavailable; using Pillow instead.
+MovieWriter ffmpeg unavailable; using Pillow instead.
+generating mode GIF files:   8%|▊         | 1/12 [00:06<01:08,  6.22s/it]generating mode GIF files:  50%|█████     | 6/12 [00:06<00:04,  1.27it/s]generating mode GIF files: 100%|██████████| 12/12 [00:06<00:00,  1.87it/s]
+
+----- GENERATING SPECTRA PLOT... 
+	 Plotting spectra...
+	 Saving spectra plot...
+========= Job finished at Tue Mar 12 17:59:50 JST 2024 ==========
