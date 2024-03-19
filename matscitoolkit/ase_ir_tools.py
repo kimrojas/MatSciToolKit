@@ -29,6 +29,7 @@ from matscitoolkit.utils.plot import plot_function, plot_spectra
 def generateDisplacedStructures(
     filepath: str,
     disp_dir: str = "displacement_dir",
+    filetype: str = "traj",
 ):
     """
     Generate displaced structures from a given structure file.
@@ -59,7 +60,7 @@ def generateDisplacedStructures(
         disp, atm = image
         data = {"name": disp.name, "mode": disp.a, "direction": disp.i, "sign": disp.sign, "ndisp": disp.ndisp}
 
-        filename = f"{i:0{width}d}.{data['name']}.vasp"
+        filename = f"{i:0{width}d}.{data['name']}.{filetype}"
         write(os.path.join(disp_dir, filename), atm)
         print_log(f"\t{i:>{width}d} {data['name']:10s} :: {data}")
 
@@ -163,6 +164,7 @@ class DFTrunner:
         eopreg=0.0001,
         calc_check="calc_check",
         debug=False,
+        filetype="traj",
     ):
         self.system_id = system_id
         self.input_data = input_data
@@ -177,9 +179,10 @@ class DFTrunner:
         self.eopreg = eopreg
         self.calc_check = calc_check
         self.debug = debug
+        self.filetype = filetype
 
         # Initialize system data
-        filelist = glob(os.path.join(self.displacement_dir, "*.vasp"))
+        filelist = glob(os.path.join(self.displacement_dir, f"*.{self.filetype}"))
         filedict = {int(os.path.basename(f).split(".")[0]): f for f in filelist}
         filepath = filedict[self.system_id]
         self.filename = os.path.basename(filepath)

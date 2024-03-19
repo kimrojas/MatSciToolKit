@@ -16,3 +16,6 @@ __pycache__/
 # Build
 build
 *egg-info
+
+# Ignore test tmp files
+test/tmp/
