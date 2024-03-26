@@ -11,6 +11,7 @@ from datetime import datetime
 from pprint import pprint
 from glob import glob
 from tqdm import tqdm
+from pathlib import Path
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -184,9 +185,9 @@ class DFTrunner:
         # Initialize system data
         filelist = glob(os.path.join(self.displacement_dir, f"*.{self.filetype}"))
         filedict = {int(os.path.basename(f).split(".")[0]): f for f in filelist}
-        filepath = filedict[self.system_id]
-        self.filename = os.path.basename(filepath)
-        self.system_data = read(filepath)
+        self.filepath = Path(filedict[self.system_id])
+        self.filename = self.filepath.name
+        self.system_data = read(self.filepath)
         base_filepath = filedict[1]
 
         # Initialize emaxpos
@@ -205,7 +206,8 @@ class DFTrunner:
             os.environ['ESPRESSO_TMPDIR'] = f"tmpdir"
 
         os.makedirs(self.calc_check, exist_ok=True)
-        calc_check_file = os.path.join(self.calc_check, f"{self.filename.removesuffix('.vasp')}.log")
+        # calc_check_file = os.path.join(self.calc_check, f"{self.filename.removesuffix('.vasp')}.log")
+        calc_check_file = os.path.join(self.calc_check, f"{self.filepath.stem}.log")
         fw = open(calc_check_file, "w")
 
         for i_edir, i_emaxpos in zip(self.field_directions, self.emaxpos):
@@ -256,7 +258,8 @@ class DFTrunner:
         espresso_args["input_data"]["system"].update({"edir": i_edir, "emaxpos": i_emaxpos})
 
         # Change directory name
-        FileID = f"{self.filename.removesuffix('.vasp')}"
+        # FileID = f"{self.filename.removesuffix('.vasp')}"
+        FileID = f"{self.filepath.stem}"
         self.directory_loc = espresso_args["directory"].replace("SUFFIX", f"/edir_{i_edir}/{FileID}")
         espresso_args["directory"] = self.directory_loc
 
@@ -434,7 +437,9 @@ class PostProcess:
                 self.ir = pickle.load(f)
         else:
             if structure_file is None:
-                self.atoms_obj = read(glob("displacement_dir/*.vasp")[0])
+                ref_file = Path("displacement_dir")
+                self.atoms_obj = read(next(ref_file.glob("*.eq.*")))
+                # self.atoms_obj = read(glob("displacement_dir/*.vasp")[0])
             else:
                 self.atoms_obj = read(structure_file)
             

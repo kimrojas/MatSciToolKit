@@ -265,7 +265,7 @@ class TestIRToolsWorkflow:
         dft_path = Path("dft_calc")
         assert dft_path.is_dir(), "[DFTrunner] `dft_calc` directory was not created"
 
-        ndft = len(list(dft_path.rglob("*.traj")))
+        ndft = len(list(dft_path.rglob("*.pwo")))
         assert ndft == self.nfiles*3, f"[DFTrunner] Number of DFT calculation is not correct {ndft} {self.nfiles*3}"
 
         self.tmp.return_to_main()

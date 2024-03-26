@@ -15,6 +15,9 @@ class TemporaryEnvironment:
         # Temporary path handling
         tmpname = "_".join([str(i) for i in tmpname])
         self.tmp_path = self.test_path / Path("tmp") / Path(tmpname)
+        if self.tmp_path.exists():
+            shutil.rmtree(self.tmp_path)
+        
         self.tmp_path.mkdir(parents=True, exist_ok=True)
         os.chdir(self.tmp_path)
 

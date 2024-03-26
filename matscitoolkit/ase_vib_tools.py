@@ -11,6 +11,7 @@ from datetime import datetime
 from pprint import pprint
 from glob import glob
 from tqdm import tqdm
+from pathlib import Path
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -121,9 +122,9 @@ class DFTrunner:
         # Initialize system data
         filelist = glob(os.path.join(self.displacement_dir, f"*.{self.filetype}"))
         filedict = {int(os.path.basename(f).split(".")[0]): f for f in filelist}
-        filepath = filedict[self.system_id]
-        self.filename = os.path.basename(filepath)
-        self.system_data = read(filepath)
+        self.filepath = Path(filedict[self.system_id])
+        self.filename = self.filepath.name
+        self.system_data = read(self.filepath)
         base_filepath = filedict[1]
 
     def run(self):
