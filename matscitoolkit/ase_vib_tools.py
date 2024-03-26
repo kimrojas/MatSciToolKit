@@ -144,7 +144,8 @@ class DFTrunner:
         i_espresso_args = self.make_espresso_args()
         try:
             calc = Espresso(**i_espresso_args)
-            self.system_data.set_calculator(calc)
+            # self.system_data.set_calculator(calc)
+            self.system_data.calc = calc
             self.system_data.get_potential_energy()
             energy = self.system_data.get_potential_energy()
             force = self.system_data.get_forces()
@@ -229,9 +230,9 @@ class Collector:
             output_file = f"vib/{full_dispname}"
             self.serialize(forces, output_file)
 
-        # SAVE ALL COLLECTED DATA
-        with open("collected_data.json", "w") as f:
-            json.dump(self.data_dict, f, indent=4, default=self.convert_np_to_list)
+        # # SAVE ALL COLLECTED DATA
+        # with open("collected_data.json", "w") as f:
+        #     json.dump(self.data_dict, f, indent=4, default=self.convert_np_to_list)
 
     def convert_np_to_list(self, obj):
         """Convert numpy array to list."""

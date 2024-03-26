@@ -219,7 +219,8 @@ class DFTrunner:
 
             try:
                 calc = Espresso(**i_espresso_args)
-                self.system_data.set_calculator(calc)
+                # self.system_data.set_calculator(calc)
+                self.system_data.calc = calc
                 self.system_data.get_potential_energy()
                 energy = self.system_data.get_potential_energy()
                 force = self.system_data.get_forces()

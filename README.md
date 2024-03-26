@@ -36,7 +36,7 @@ export OMP_NUM_THREADS=1
 
 3. Run the test
 ```
-pytest -v --parallel=4
+pytest -v --durations=0 --parallel=4 
 ```
 
 

@@ -18,6 +18,9 @@ class TemporaryEnvironment:
         self.tmp_path.mkdir(parents=True, exist_ok=True)
         os.chdir(self.tmp_path)
 
+    def goto_tmp(self):
+        os.chdir(self.tmp_path)
+
     def clean(self):
         shutil.rmtree(self.tmp_path)
 
