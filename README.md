@@ -20,3 +20,23 @@ pip install git+https://github.com/kimrojas/MatSciToolKit.git
 pip install git+https://gitlab.com/ase/ase.git@f1b37b76dda641bcdd7dc3f41a5aa243659f4a99
 ```
 
+
+## Test
+
+1. Have a required Quantum Espresso executable
+```
+which pw.x
+```
+
+2. Set the environment variable
+```
+export OMP_NUM_THREADS=1
+```
+
+
+3. Run the test
+```
+pytest -v --durations=0 --parallel=4 
+```
+
+

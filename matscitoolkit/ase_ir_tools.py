@@ -11,6 +11,7 @@ from datetime import datetime
 from pprint import pprint
 from glob import glob
 from tqdm import tqdm
+from pathlib import Path
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -29,6 +30,7 @@ from matscitoolkit.utils.plot import plot_function, plot_spectra
 def generateDisplacedStructures(
     filepath: str,
     disp_dir: str = "displacement_dir",
+    filetype: str = "traj",
 ):
     """
     Generate displaced structures from a given structure file.
@@ -59,7 +61,7 @@ def generateDisplacedStructures(
         disp, atm = image
         data = {"name": disp.name, "mode": disp.a, "direction": disp.i, "sign": disp.sign, "ndisp": disp.ndisp}
 
-        filename = f"{i:0{width}d}.{data['name']}.vasp"
+        filename = f"{i:0{width}d}.{data['name']}.{filetype}"
         write(os.path.join(disp_dir, filename), atm)
         print_log(f"\t{i:>{width}d} {data['name']:10s} :: {data}")
 
@@ -163,6 +165,7 @@ class DFTrunner:
         eopreg=0.0001,
         calc_check="calc_check",
         debug=False,
+        filetype="traj",
     ):
         self.system_id = system_id
         self.input_data = input_data
@@ -177,13 +180,14 @@ class DFTrunner:
         self.eopreg = eopreg
         self.calc_check = calc_check
         self.debug = debug
+        self.filetype = filetype
 
         # Initialize system data
-        filelist = glob(os.path.join(self.displacement_dir, "*.vasp"))
+        filelist = glob(os.path.join(self.displacement_dir, f"*.{self.filetype}"))
         filedict = {int(os.path.basename(f).split(".")[0]): f for f in filelist}
-        filepath = filedict[self.system_id]
-        self.filename = os.path.basename(filepath)
-        self.system_data = read(filepath)
+        self.filepath = Path(filedict[self.system_id])
+        self.filename = self.filepath.name
+        self.system_data = read(self.filepath)
         base_filepath = filedict[1]
 
         # Initialize emaxpos
@@ -202,7 +206,8 @@ class DFTrunner:
             os.environ['ESPRESSO_TMPDIR'] = f"tmpdir"
 
         os.makedirs(self.calc_check, exist_ok=True)
-        calc_check_file = os.path.join(self.calc_check, f"{self.filename.removesuffix('.vasp')}.log")
+        # calc_check_file = os.path.join(self.calc_check, f"{self.filename.removesuffix('.vasp')}.log")
+        calc_check_file = os.path.join(self.calc_check, f"{self.filepath.stem}.log")
         fw = open(calc_check_file, "w")
 
         for i_edir, i_emaxpos in zip(self.field_directions, self.emaxpos):
@@ -216,7 +221,8 @@ class DFTrunner:
 
             try:
                 calc = Espresso(**i_espresso_args)
-                self.system_data.set_calculator(calc)
+                # self.system_data.set_calculator(calc)
+                self.system_data.calc = calc
                 self.system_data.get_potential_energy()
                 energy = self.system_data.get_potential_energy()
                 force = self.system_data.get_forces()
@@ -252,7 +258,8 @@ class DFTrunner:
         espresso_args["input_data"]["system"].update({"edir": i_edir, "emaxpos": i_emaxpos})
 
         # Change directory name
-        FileID = f"{self.filename.removesuffix('.vasp')}"
+        # FileID = f"{self.filename.removesuffix('.vasp')}"
+        FileID = f"{self.filepath.stem}"
         self.directory_loc = espresso_args["directory"].replace("SUFFIX", f"/edir_{i_edir}/{FileID}")
         espresso_args["directory"] = self.directory_loc
 
@@ -430,7 +437,9 @@ class PostProcess:
                 self.ir = pickle.load(f)
         else:
             if structure_file is None:
-                self.atoms_obj = read(glob("displacement_dir/*.vasp")[0])
+                ref_file = Path("displacement_dir")
+                self.atoms_obj = read(next(ref_file.glob("*.eq.*")))
+                # self.atoms_obj = read(glob("displacement_dir/*.vasp")[0])
             else:
                 self.atoms_obj = read(structure_file)
             
