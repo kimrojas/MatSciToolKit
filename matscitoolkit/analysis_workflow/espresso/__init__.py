@@ -1,0 +1,2 @@
+# from matscitoolkit.analysis_workflow.espresso.vibrational import VibrationalAnalysisWorkflow
+from .vibrational import VibrationalAnalysisWorkflow
