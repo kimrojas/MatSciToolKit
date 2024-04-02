@@ -1,6 +1,8 @@
 from matscitoolkit.analysis_workflow.ABC_workflow import WorkflowBaseClass
+from matscitoolkit.utils.ensure_key import ensure_key
 from ase.vibrations import Vibrations, Infrared
 from ase.calculators.espresso import Espresso, EspressoProfile
+import json
 
 
 class VibrationalAnalysisWorkflow(WorkflowBaseClass):
@@ -13,9 +15,11 @@ class VibrationalAnalysisWorkflow(WorkflowBaseClass):
         directory = self.cache / directory / self.job["fullname"]
         self.goto_workdir(directory)
         
-        self.log.info(f"Input data: {input_data}")
-        input_data = self.ensure_key(input_data, "tprnfor", True)
-        self.log.info(f"Input data: {input_data}")
+        self.log.info(f"Input data detected: \n{json.dumps(input_data, indent=4)}")
+        
+        
+        input_data = ensure_key(input_data, "tprnfor", True, logger=self.log)
+        self.log.info(f"Input data after ensure_key: \n{json.dumps(input_data, indent=4)}")
 
         # Define calculator
         calculator = Espresso(

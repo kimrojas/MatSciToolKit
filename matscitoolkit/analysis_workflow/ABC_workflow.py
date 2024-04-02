@@ -3,6 +3,7 @@ from ase.io import read, write
 from ase.vibrations import Vibrations, Infrared
 from pathlib import Path
 from matscitoolkit.analysis_workflow.logger import logger
+from matscitoolkit.utils.ensure_key import ensure_key
 import os
 from copy import copy, deepcopy
 
@@ -122,33 +123,7 @@ class WorkflowBaseClass(ABC):
         os.chdir(directory)
 
     def goto_maindir(self):
-        os.chdir(self.main_path)
-
-    def ensure_key(self, dictionary, default_key, default_value):
-        """Ensures that the key exists in the dictionary with a specific value"""
-        d = deepcopy(dictionary)
-        key_found = False
-        
-        def update_recursive(sub_d):
-            nonlocal key_found
-            
-            if default_key in sub_d:
-                sub_d[default_key] = default_value
-                key_found = True
-                
-            for k, v in sub_d.items():
-                if isinstance(v, dict):
-                    update_recursive(v)
-        
-        # Update the dictionary recursively
-        update_recursive(d) 
-        
-        self.log.info(f"Updated key_found = {key_found}")
-        if not key_found:
-            d[default_key] = default_value
-    
-        return d
-        
+        os.chdir(self.main_path)        
 
     def close_logger(self):
         self.log.close()
