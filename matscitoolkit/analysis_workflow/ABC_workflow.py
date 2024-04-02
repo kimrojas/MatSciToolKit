@@ -85,9 +85,9 @@ class WorkflowBaseClass(ABC):
             write(dispfile, self.job["structure"])  # Write structure file
             self.log.info(f"Displaced structure saved in: {str(dispfile)}")
 
-    def run(self, calculator, directory):
+    def irun(self, calculator, directory, tag=""):
         """RUN DFT CALCULATION on self.job['structure']"""
-        self.log.info(f"Running '{self.job['fullname']}' in {directory}/")
+        self.log.info(f"Running '{self.job['fullname']}' {tag} in {directory}/")
         
         # Attach calculator
         self.job["structure"].calc = calculator
@@ -116,6 +116,9 @@ class WorkflowBaseClass(ABC):
     def clean(self, directory=None):
         """CLEAN TEMPORARY DIRECTORY"""
         pass
+    
+    # def collect(self):
+        
 
     def goto_workdir(self, directory):
         directory = Path(directory)
@@ -123,7 +126,7 @@ class WorkflowBaseClass(ABC):
         os.chdir(directory)
 
     def goto_maindir(self):
-        os.chdir(self.main_path)        
+        os.chdir(self.main_path)
 
     def close_logger(self):
         self.log.close()

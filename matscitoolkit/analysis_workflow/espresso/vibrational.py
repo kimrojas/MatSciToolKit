@@ -30,7 +30,7 @@ class VibrationalAnalysisWorkflow(WorkflowBaseClass):
         )
 
         # Run the calculation
-        super().run(calculator=calculator, directory=directory)      
+        super().irun(calculator=calculator, directory=directory)      
 
         # Return to main directory
         self.goto_maindir()
