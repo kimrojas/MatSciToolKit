@@ -3,6 +3,8 @@ from ase.io import read, write
 from ase.vibrations import Vibrations, Infrared
 from pathlib import Path
 from matscitoolkit.analysis_workflow.logger import logger
+import os
+from copy import copy, deepcopy
 
 
 def test_logger():
@@ -36,6 +38,9 @@ class WorkflowBaseClass(ABC):
         self.cache.mkdir(exist_ok=True)
         self.log.info(f"Cache directory created: {str(self.cache)}")
 
+        # Main directory
+        self.main_path = Path.cwd()
+
     def get_displaced_structure(self, generatefile=True, directory=None, methodkwargs={}):
         """Produces the displaced structure for a given job number"""
 
@@ -60,7 +65,12 @@ class WorkflowBaseClass(ABC):
 
         # Organize job information
         self.log.info(f"Job name: {disp.name}")
-        self.job = {"number": self.jobnumber, "name": disp.name, "structure": atm}
+        self.job = {
+            "number": self.jobnumber,
+            "name": disp.name,
+            "structure": atm,
+            "fullname": f"{self.jobnumber:0{self.dim}d}.{disp.name}",
+        }
 
         # Print/Output structure file for displaced structure
         if directory is None:
@@ -69,20 +79,76 @@ class WorkflowBaseClass(ABC):
             directory = self.cache / directory
 
         if generatefile:
-            dispfile = directory / f"{self.jobnumber:0{self.dim}d}.{self.job['name']}{self.filetype}"
+            dispfile = directory / f"{self.job['fullname']}{self.filetype}"
             directory.mkdir(exist_ok=True)  # Initialize directory
             write(dispfile, self.job["structure"])  # Write structure file
             self.log.info(f"Displaced structure saved in: {str(dispfile)}")
 
-    @abstractmethod
-    def run(self):
+    def run(self, calculator, directory):
         """RUN DFT CALCULATION on self.job['structure']"""
-        pass
+        self.log.info(f"Running '{self.job['fullname']}' in {directory}/")
+        
+        # Attach calculator
+        self.job["structure"].calc = calculator
+        
+        # Start energy calculation
+        try:
+            self.job["structure"].get_potential_energy()
+        except Exception as e:
+            self.log.error(f"Error: {e}")
+            self.goto_maindir()
+            raise Exception(f"Error: {e}")
+        else:
+            self.log.info(f"Energy calculation successful")
+
+        # Start energy calculation
+        try:
+            self.job["structure"].get_forces()
+        except Exception as e:
+            self.log.error(f"Error: {e}")
+            self.goto_maindir()
+            raise Exception(f"Error: {e}")
+        else:
+            self.log.info(f"Force calculation successful")
 
     @abstractmethod
     def clean(self, directory=None):
         """CLEAN TEMPORARY DIRECTORY"""
         pass
+
+    def goto_workdir(self, directory):
+        directory = Path(directory)
+        directory.mkdir(exist_ok=True, parents=True)
+        os.chdir(directory)
+
+    def goto_maindir(self):
+        os.chdir(self.main_path)
+
+    def ensure_key(self, dictionary, default_key, default_value):
+        """Ensures that the key exists in the dictionary with a specific value"""
+        d = deepcopy(dictionary)
+        key_found = False
+        
+        def update_recursive(sub_d):
+            nonlocal key_found
+            
+            if default_key in sub_d:
+                sub_d[default_key] = default_value
+                key_found = True
+                
+            for k, v in sub_d.items():
+                if isinstance(v, dict):
+                    update_recursive(v)
+        
+        # Update the dictionary recursively
+        update_recursive(d) 
+        
+        self.log.info(f"Updated key_found = {key_found}")
+        if not key_found:
+            d[default_key] = default_value
+    
+        return d
+        
 
     def close_logger(self):
         self.log.close()
