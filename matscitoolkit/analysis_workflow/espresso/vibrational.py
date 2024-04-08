@@ -10,14 +10,20 @@ class VibrationalAnalysisWorkflow(WorkflowBaseClass):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-    def run(self, input_data, pseudopotentials, kpts, profile=["mpirun", "pw.x"], directory="dft",):        
+    def run(
+        self,
+        input_data,
+        pseudopotentials,
+        kpts,
+        profile=["mpirun", "pw.x"],
+        directory="dft",
+    ):
         # Work directory
         directory = self.cache / directory / self.job["fullname"]
         self.goto_workdir(directory)
-        
+
         self.log.info(f"Input data detected: \n{json.dumps(input_data, indent=4)}")
-        
-        
+
         input_data = ensure_key(input_data, "tprnfor", True, logger=self.log)
         self.log.info(f"Input data after ensure_key: \n{json.dumps(input_data, indent=4)}")
 
@@ -30,7 +36,7 @@ class VibrationalAnalysisWorkflow(WorkflowBaseClass):
         )
 
         # Run the calculation
-        super().irun(calculator=calculator, directory=directory)      
+        super().irun(calculator=calculator, directory=directory)
 
         # Return to main directory
         self.goto_maindir()

@@ -6,6 +6,7 @@ from matscitoolkit.analysis_workflow.logger import logger
 from matscitoolkit.utils.ensure_key import ensure_key
 import os
 from copy import copy, deepcopy
+from matscitoolkit.utils.serial import serialize, deserialize
 
 
 def test_logger():
@@ -22,7 +23,7 @@ def test_logger():
 
 class WorkflowBaseClass(ABC):
 
-    def __init__(self, filepath=None, jobnumber=None, cache="cache", debug=True):
+    def __init__(self, filepath=None, jobnumber=None, cache="cache", debug=True, logfile=None):
         # Reference structure
         self.filepath = Path(filepath)
         self.filename = self.filepath.name
@@ -31,7 +32,9 @@ class WorkflowBaseClass(ABC):
 
         # Initialize logger
         self.jobnumber = int(jobnumber)
-        self.log = logger(logfile=f"{self.filestem}_{self.jobnumber}.log", debug=debug)
+        if logfile is None:
+            logfile = f"{self.filestem}_{self.jobnumber}.log"
+        self.log = logger(logfile=logfile, debug=debug)
         self.log.info(f"Subclass name: {self.__class__.__name__}s")
 
         # Initialize cache directory
@@ -42,17 +45,25 @@ class WorkflowBaseClass(ABC):
         # Main directory
         self.main_path = Path.cwd()
 
-    def get_displaced_structure(self, generatefile=True, directory=None, methodkwargs={}):
+    def get_displaced_structure(self, generatefile=True, directory=None, method="vib", methodkwargs={}):
         """Produces the displaced structure for a given job number"""
+        self.method = method
+        if method == "vib":
+            self.methodclass = Vibrations
+            default_methodkwargs = {"indices": None, "delta": 0.01, "nfree": 2}
+        if method == "ir":
+            self.methodclass = Infrared
+            default_methodkwargs = {"indices": None, "delta": 0.01, "nfree": 2, "directions": None}
 
         # Add default values for methodkwargs
-        default_methodkwargs = {"indices": None, "delta": 0.01, "nfree": 2, "directions": None}
         for k, v in default_methodkwargs.items():
             methodkwargs.setdefault(k, v)
 
         # Compute all displaced structures
         self.log.info(f"Reference structure: '{self.filename}'")
-        displaced_structures = dict(enumerate(Infrared(read(self.filepath), **methodkwargs).iterdisplace(), start=1))
+        displaced_structures = dict(
+            enumerate(self.methodclass(read(self.filepath), **methodkwargs).iterdisplace(), start=1)
+        )
         self.nfiles = len(displaced_structures)
         self.dim = len(str(self.nfiles))
         self.log.info(f"Expected number of displaced structures: {self.nfiles}")
@@ -88,10 +99,10 @@ class WorkflowBaseClass(ABC):
     def irun(self, calculator, directory, tag=""):
         """RUN DFT CALCULATION on self.job['structure']"""
         self.log.info(f"Running '{self.job['fullname']}' {tag} in {directory}/")
-        
+
         # Attach calculator
         self.job["structure"].calc = calculator
-        
+
         # Start energy calculation
         try:
             self.job["structure"].get_potential_energy()
@@ -116,8 +127,50 @@ class WorkflowBaseClass(ABC):
     def clean(self, directory=None):
         """CLEAN TEMPORARY DIRECTORY"""
         pass
-    
-    # def collect(self):
+
+    def collect(self, method="vib", cache_source="dft", outputpattern="espresso.pwo"):
+        self.log.info(":: COLLECT module ::")
+        source = self.cache / cache_source
+        destination = method
+        self.log.info(f"Collecting files from {source} to {destination}")
+        self.log.info(f"Destination directory: {destination}")
+        self.log.info(f"Source directory: {source}")
+
+        # Create destination directory
+        filelist = sorted(list(Path(source).rglob(outputpattern)))
+        filelisttxt = "\n" + "\n".join([str(f) for f in filelist])
+        parentslist = [str(f.parent).split("/") for f in filelist]
+        keylist = [p[2].split(".")[-1] for p in parentslist]
+        keylisttxt = "\n" + "\n".join(keylist)
+        Path(destination).mkdir(exist_ok=True)
+        
+        # Check file depth
+        filedepth = len(parentslist[0])
+        # filedepth = 3 means, dipole are in just 1 file
+        # filedepth = 4 means, dipole separated by dimensions in multiple files.
+        
+        self.log.info(f"Files to be collected: {filelisttxt}")
+        self.log.info(f"Key list: {keylisttxt}")
+        
+        # Read data (force/dipole) and serialize
+        if filedepth == 3:
+            for f, key in zip(filelist, keylist):
+                atoms_obj = read(f)
+                
+                serialize_input = {}
+                serialize_input["force_arr"] = atoms_obj.get_forces()
+                serialize_input["output_file"] = Path(destination) / f"cache.{key}.json"
+                
+                if method == "ir":
+                    serialize_input["dipole_arr"] = atoms_obj.get_dipole()
+
+                serialize(**serialize_input)
+        
+        if filedepth == 4:
+            pass
+        
+        
+        
         
 
     def goto_workdir(self, directory):
