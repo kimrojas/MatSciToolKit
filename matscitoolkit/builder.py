@@ -24,7 +24,7 @@ class AddAdsorbateMethod:
         # -- Output --
         self.structure_complex = None
 
-    def set_adsorbate(self, adsorbate, adsorbate_origin="COG", adsorbate_rotation=[]):
+    def set_adsorbate(self, adsorbate, adsorbate_origin="COG", adsorbate_rotation=None):
         """
         Sets the adsorbate for the builder.
 
@@ -35,11 +35,12 @@ class AddAdsorbateMethod:
                 - "COG": Center of geometry of the adsorbate.
                 - int: User-defined atom index representing the origin.
                 - list: List of user-defined atom indices representing the center of all indices.
-            adsorbate_rotation (list or tuple, optional): The rotation of the adsorbate. Each rotation is specified as a tuple with the format (angle, axis vector).
-                - if the list is empty, no rotation is applied.
-                - if the list is not empty, each tuple should have two elements: angle and axis vector.
-                - Example: [[90, [1, 0, 0]], [180, [0, 1, 0]]] will rotate the adsorbate 90 degrees around the x-axis and THEN 180 degrees around the y-axis.
-                - Example: [[90, 'x'], [180, 'y']] will rotate the adsorbate 90 degrees around the x-axis and THEN 180 degrees around the y-axis.
+            adsorbate_rotation (tuple or list of tuples, optional): The rotation of the adsorbate. Each rotation is specified as a tuple with the format (angle, axis vector).
+                - if the input is empty, no rotation is applied (default).
+                - if the input is a tuple (angle, axis vector), the adsorbate is rotated by the angle around the axis vector.
+                - if the input is a list of tuples, the adsorbate is rotated by each tuple in the list in sequence.
+                - Example: [(90, [1, 0, 0]), (180, [0, 1, 0])] will rotate the adsorbate 90 degrees around the x-axis and THEN 180 degrees around the y-axis.
+                - Example: [(90, 'x'), (180, 'y')] will rotate the adsorbate 90 degrees around the x-axis and THEN 180 degrees around the y-axis.
 
         Raises:
             ValueError: If the adsorbate is not an Atoms object or a valid file path.
@@ -52,7 +53,7 @@ class AddAdsorbateMethod:
         if isinstance(adsorbate, str) or isinstance(adsorbate, Path):
             self.adsorbate = read(adsorbate)
         elif isinstance(adsorbate, Atoms):
-            self.adsorbate = adsorbate
+            self.adsorbate = adsorbate.copy()
         else:
             raise ValueError("Adsorbate should be an Atoms object or a path to a file.")
 
@@ -70,7 +71,11 @@ class AddAdsorbateMethod:
         self.adsorbate.translate(-self.adsorbate_origin)
 
         # -- Set adsorbate rotation --
-        if isinstance(adsorbate_rotation, list) or isinstance(adsorbate_rotation, tuple):
+        if adsorbate_rotation == [] or adsorbate_rotation is None:
+            return
+        if isinstance(adsorbate_rotation, tuple):
+            adsorbate_rotation = [adsorbate_rotation]
+        if isinstance(adsorbate_rotation, list):
             for irot in adsorbate_rotation:
                 assert len(irot) == 2, "Rotation should be a list of tuples with the format (angle, axis vector)"
                 angle, vector_axis = irot
@@ -92,7 +97,7 @@ class AddAdsorbateMethod:
         if isinstance(substrate, str) or isinstance(substrate, Path):
             self.substrate = read(substrate)
         elif isinstance(substrate, Atoms):
-            self.substrate = substrate
+            self.substrate = substrate.copy()
         else:
             raise ValueError("Substrate should be an Atoms object or a path to a file.")
 
@@ -166,8 +171,9 @@ def add_adsorbate(
     
     if isinstance(height, float) or isinstance(height, int):
         height = [float(height)]
-    
+        
     images = []
+    
     for h in height:
         print(f"Building structure at height: {h}")
         obj.set_height(h)
