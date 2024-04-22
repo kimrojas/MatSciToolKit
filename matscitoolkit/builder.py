@@ -71,7 +71,7 @@ class AddAdsorbateMethod:
         self.adsorbate.translate(-self.adsorbate_origin)
 
         # -- Set adsorbate rotation --
-        if adsorbate_rotation == []:
+        if adsorbate_rotation == [] or adsorbate_rotation is None:
             return
         if isinstance(adsorbate_rotation, tuple):
             adsorbate_rotation = [adsorbate_rotation]
@@ -80,7 +80,6 @@ class AddAdsorbateMethod:
                 assert len(irot) == 2, "Rotation should be a list of tuples with the format (angle, axis vector)"
                 angle, vector_axis = irot
                 self.adsorbate.rotate(a=angle, v=vector_axis)
-        print("adsorbate_rotation", adsorbate_rotation)
 
     def set_substrate(self, substrate, substrate_reference):
         """
@@ -165,21 +164,20 @@ def add_adsorbate(
     substrate_reference,
     adsorbate_origin="COG",
     adsorbate_rotation=[],
-):    
+):
+    obj = AddAdsorbateMethod()
+    obj.set_adsorbate(adsorbate, adsorbate_origin, adsorbate_rotation)
+    obj.set_substrate(substrate, substrate_reference)
+    
     if isinstance(height, float) or isinstance(height, int):
         height = [float(height)]
         
     images = []
     
     for h in height:
-        obj = AddAdsorbateMethod()
-        obj.set_adsorbate(adsorbate, adsorbate_origin, adsorbate_rotation)
-        obj.set_substrate(substrate, substrate_reference)
         print(f"Building structure at height: {h}")
-        print("Changed")
         obj.set_height(h)
         obj.build()
-        
         structure = obj.get_structure()
         images.append(structure)
     
