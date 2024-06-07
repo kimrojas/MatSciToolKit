@@ -137,8 +137,8 @@ class AddAdsorbateMethod:
         self.substrate_complex = _substrate + _adsorbate
         
         # -- Check for ionic overlap --
-        warn = self.warn_overlap(_adsorbate, _substrate)
-        return warn
+        success_status = self.warn_overlap(_adsorbate, _substrate)
+        return success_status
 
     def get_structure(self):
         return self.substrate_complex.copy()
@@ -147,15 +147,15 @@ class AddAdsorbateMethod:
         ads_pos, ads_sym, ads_num = ads.get_positions(), ads.get_chemical_symbols(), ads.get_atomic_numbers()
         sub_pos, sub_sym, sub_num = sub.get_positions(), sub.get_chemical_symbols(), sub.get_atomic_numbers()
         
-        warn_status = False
+        success_status = True
         
         for iads, (iads_pos, iads_sym, iads_num) in enumerate(zip(ads_pos, ads_sym, ads_num)):
             for isub, (isub_pos, isub_sym, isub_num) in enumerate(zip(sub_pos, sub_sym, sub_num)):
                 if np.linalg.norm(iads_pos - isub_pos) < scale * (covalent_radii[iads_num] + covalent_radii[isub_num]):
                     print(f"  Warning: Adsorbate atom [{iads_sym:>2}_{iads:<3d}] and Substrate atom [{isub_sym:>2}_{isub:<3d}] are too close.")
-                    warn_status = True
+                    success_status = False
                     
-        return warn_status
+        return success_status
 
 def add_adsorbate(
     adsorbate,
@@ -164,6 +164,8 @@ def add_adsorbate(
     substrate_reference,
     adsorbate_origin="COG",
     adsorbate_rotation=[],
+    full_output=True,
+    return_sucess=False,
 ):
     obj = AddAdsorbateMethod()
     obj.set_adsorbate(adsorbate, adsorbate_origin, adsorbate_rotation)
@@ -175,13 +177,16 @@ def add_adsorbate(
     images = []
     
     for h in height:
-        print(f"Building structure at height: {h}")
+        if full_output:
+            print(f"Building structure at height: {h}")
         obj.set_height(h)
-        obj.build()
+        success_status = obj.build()
         structure = obj.get_structure()
         images.append(structure)
     
     if len(images) == 1:
         return images[0]
+    if len(images) == 1 and return_sucess:
+        return images[0], success_status
     else:
         return images
