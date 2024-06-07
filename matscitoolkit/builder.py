@@ -165,7 +165,7 @@ def add_adsorbate(
     adsorbate_origin="COG",
     adsorbate_rotation=[],
     full_output=True,
-    return_sucess=False,
+    return_success=False,
 ):
     obj = AddAdsorbateMethod()
     obj.set_adsorbate(adsorbate, adsorbate_origin, adsorbate_rotation)
@@ -185,8 +185,9 @@ def add_adsorbate(
         images.append(structure)
     
     if len(images) == 1:
-        return images[0]
-    if len(images) == 1 and return_sucess:
-        return images[0], success_status
+        if return_success:
+            return images[0], success_status
+        else:
+            return images[0]
     else:
         return images
